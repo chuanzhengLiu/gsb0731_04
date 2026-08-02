@@ -1,0 +1,122 @@
+import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { User, UserRole } from '../entities/user.entity';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+export declare class AuthService {
+    private userRepository;
+    private jwtService;
+    constructor(userRepository: Repository<User>, jwtService: JwtService);
+    register(registerDto: RegisterDto): Promise<{
+        access_token: string;
+        refresh_token: string;
+        user: {
+            id: number;
+            phone: string;
+            email: string;
+            name: string;
+            role: UserRole;
+            gym_id: number;
+            verified_at: Date;
+            rejected_at: Date | null;
+            rejection_reason: string | null;
+            created_at: Date;
+            updated_at: Date;
+            gym: import("../entities/gym.entity").Gym;
+            ascents: import("../entities/ascent.entity").Ascent[];
+            gradeVotes: import("../entities/grade-vote.entity").GradeVote[];
+            routes: import("../entities/route.entity").Route[];
+            profile: import("../entities/user-profile.entity").UserProfile;
+            operationLogs: import("../entities/operation-log.entity").OperationLog[];
+        };
+    }>;
+    login(loginDto: LoginDto): Promise<{
+        access_token: string;
+        refresh_token: string;
+        user: {
+            id: number;
+            phone: string;
+            email: string;
+            name: string;
+            role: UserRole;
+            gym_id: number;
+            verified_at: Date;
+            rejected_at: Date | null;
+            rejection_reason: string | null;
+            created_at: Date;
+            updated_at: Date;
+            gym: import("../entities/gym.entity").Gym;
+            ascents: import("../entities/ascent.entity").Ascent[];
+            gradeVotes: import("../entities/grade-vote.entity").GradeVote[];
+            routes: import("../entities/route.entity").Route[];
+            profile: import("../entities/user-profile.entity").UserProfile;
+            operationLogs: import("../entities/operation-log.entity").OperationLog[];
+        };
+    }>;
+    refreshToken(refreshToken: string): Promise<{
+        access_token: string;
+        refresh_token: string;
+        user: {
+            id: number;
+            phone: string;
+            email: string;
+            name: string;
+            role: UserRole;
+            gym_id: number;
+            verified_at: Date;
+            rejected_at: Date | null;
+            rejection_reason: string | null;
+            created_at: Date;
+            updated_at: Date;
+            gym: import("../entities/gym.entity").Gym;
+            ascents: import("../entities/ascent.entity").Ascent[];
+            gradeVotes: import("../entities/grade-vote.entity").GradeVote[];
+            routes: import("../entities/route.entity").Route[];
+            profile: import("../entities/user-profile.entity").UserProfile;
+            operationLogs: import("../entities/operation-log.entity").OperationLog[];
+        };
+    }>;
+    logout(): Promise<{
+        message: string;
+    }>;
+    getProfile(userId: number): Promise<{
+        id: number;
+        phone: string;
+        email: string;
+        name: string;
+        role: UserRole;
+        gym_id: number;
+        verified_at: Date;
+        rejected_at: Date | null;
+        rejection_reason: string | null;
+        created_at: Date;
+        updated_at: Date;
+        gym: import("../entities/gym.entity").Gym;
+        ascents: import("../entities/ascent.entity").Ascent[];
+        gradeVotes: import("../entities/grade-vote.entity").GradeVote[];
+        routes: import("../entities/route.entity").Route[];
+        profile: import("../entities/user-profile.entity").UserProfile;
+        operationLogs: import("../entities/operation-log.entity").OperationLog[];
+    }>;
+    updateProfile(userId: number, updateData: Partial<User>): Promise<{
+        id: number;
+        phone: string;
+        email: string;
+        name: string;
+        role: UserRole;
+        gym_id: number;
+        verified_at: Date;
+        rejected_at: Date | null;
+        rejection_reason: string | null;
+        created_at: Date;
+        updated_at: Date;
+        gym: import("../entities/gym.entity").Gym;
+        ascents: import("../entities/ascent.entity").Ascent[];
+        gradeVotes: import("../entities/grade-vote.entity").GradeVote[];
+        routes: import("../entities/route.entity").Route[];
+        profile: import("../entities/user-profile.entity").UserProfile;
+        operationLogs: import("../entities/operation-log.entity").OperationLog[];
+    }>;
+    private generateTokens;
+    private sanitizeUser;
+}
