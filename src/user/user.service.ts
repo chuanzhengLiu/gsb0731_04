@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull, Not, Like, Raw } from 'typeorm';
 import { User, UserRole } from '../entities/user.entity';
+import { applyVerificationDecision } from '../common/verification-rules';
 
 @Injectable()
 export class UserService {
@@ -47,6 +48,7 @@ export class UserService {
       where: {
         gym_id: gymId,
         verified_at: IsNull(),
+        rejected_at: IsNull(),
         role: Not(UserRole.GUEST),
       },
       order: { created_at: 'ASC' },
@@ -59,10 +61,9 @@ export class UserService {
       throw new NotFoundException(`User with id ${userId} not found`);
     }
 
-    if (approved) {
-      user.verified_at = new Date();
-      user.role = UserRole.VERIFIED_CLIMBER;
-    }
+    // Approve/reject state transition lives in verification-rules (single source
+    // of truth, unit-tested) so it can't be accidentally regressed here.
+    applyVerificationDecision(user as any, approved, reason, UserRole.VERIFIED_CLIMBER);
 
     return this.userRepository.save(user);
   }
