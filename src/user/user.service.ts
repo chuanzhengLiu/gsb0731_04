@@ -61,9 +61,7 @@ export class UserService {
 
     if (approved) {
       user.verified_at = new Date();
-      if (user.role === UserRole.GUEST) {
-        user.role = UserRole.VERIFIED_CLIMBER;
-      }
+      user.role = UserRole.VERIFIED_CLIMBER;
     }
 
     return this.userRepository.save(user);
