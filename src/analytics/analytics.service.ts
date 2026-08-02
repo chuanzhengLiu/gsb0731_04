@@ -59,7 +59,7 @@ export class AnalyticsService {
     });
 
     const result: RouteHeat[] = [];
-    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.HIGH_POINT];
+    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.REDPOINT];
 
     for (const route of routes) {
       const allAscents = await this.ascentRepository.count({
@@ -278,7 +278,9 @@ export class AnalyticsService {
 
     const dailyCount: Record<string, number> = {};
     for (const ascent of ascents) {
-      const dateStr = ascent.created_at.toISOString().split('T')[0];
+      // 与日历同一口径：按本地日期切日，toISOString 是 UTC 会把凌晨记录划到前一天
+      const d = ascent.created_at;
+      const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       dailyCount[dateStr] = (dailyCount[dateStr] || 0) + 1;
     }
 
