@@ -42,6 +42,12 @@ export class UserController {
     return this.userService.getPendingVerifications(gymId);
   }
 
+  @Get('gyms/:gymId/rejected-verifications')
+  @Roles(UserRole.GYM_ADMIN, UserRole.PLATFORM_ADMIN)
+  getRejectedVerifications(@Param('gymId', ParseIntPipe) gymId: number) {
+    return this.userService.getRejectedVerifications(gymId);
+  }
+
   @Patch('users/:id/verify')
   @Roles(UserRole.GYM_ADMIN, UserRole.PLATFORM_ADMIN)
   verifyUser(

@@ -59,7 +59,7 @@ export class AnalyticsService {
     });
 
     const result: RouteHeat[] = [];
-    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.HIGH_POINT];
+    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.REDPOINT];
 
     for (const route of routes) {
       const allAscents = await this.ascentRepository.count({
@@ -278,7 +278,7 @@ export class AnalyticsService {
 
     const dailyCount: Record<string, number> = {};
     for (const ascent of ascents) {
-      const dateStr = ascent.created_at.toISOString().split('T')[0];
+      const dateStr = this.formatLocalDate(ascent.created_at);
       dailyCount[dateStr] = (dailyCount[dateStr] || 0) + 1;
     }
 
@@ -288,6 +288,13 @@ export class AnalyticsService {
     }));
 
     return result;
+  }
+
+  private formatLocalDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   async getStyleAnalysis(userId: number): Promise<Record<string, number>> {
