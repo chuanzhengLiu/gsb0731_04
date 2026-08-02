@@ -57,6 +57,12 @@ export class User {
   @Column({ type: 'datetime', name: 'verified_at', nullable: true })
   verified_at: Date;
 
+  @Column({ type: 'datetime', name: 'rejected_at', nullable: true })
+  rejected_at: Date | null;
+
+  @Column({ type: 'varchar', length: 500, name: 'reject_reason', nullable: true })
+  reject_reason: string | null;
+
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;
 

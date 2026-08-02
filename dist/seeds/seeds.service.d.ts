@@ -1,0 +1,35 @@
+import { Repository } from 'typeorm';
+import { User } from '../entities/user.entity';
+import { Gym } from '../entities/gym.entity';
+import { Wall } from '../entities/wall.entity';
+import { Route } from '../entities/route.entity';
+import { Hold } from '../entities/hold.entity';
+import { Ascent } from '../entities/ascent.entity';
+import { GradeVote } from '../entities/grade-vote.entity';
+import { UserProfile } from '../entities/user-profile.entity';
+export declare class SeedsService {
+    private userRepository;
+    private gymRepository;
+    private wallRepository;
+    private routeRepository;
+    private holdRepository;
+    private ascentRepository;
+    private gradeVoteRepository;
+    private userProfileRepository;
+    private readonly logger;
+    constructor(userRepository: Repository<User>, gymRepository: Repository<Gym>, wallRepository: Repository<Wall>, routeRepository: Repository<Route>, holdRepository: Repository<Hold>, ascentRepository: Repository<Ascent>, gradeVoteRepository: Repository<GradeVote>, userProfileRepository: Repository<UserProfile>);
+    run(): Promise<void>;
+    private hashPassword;
+    private createPlatformAdmin;
+    private createGymAdmin;
+    private createSetters;
+    private createClimbers;
+    private createUserProfile;
+    private createGym;
+    private createWalls;
+    private createRoutes;
+    private createHolds;
+    private createAscents;
+    private createGradeVotes;
+    private shuffleArray;
+}
