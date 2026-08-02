@@ -47,9 +47,21 @@ export class UserService {
       where: {
         gym_id: gymId,
         verified_at: IsNull(),
+        rejected_at: IsNull(),
         role: Not(UserRole.GUEST),
       },
       order: { created_at: 'ASC' },
+    });
+  }
+
+  getRejectedVerifications(gymId: number): Promise<User[]> {
+    return this.userRepository.find({
+      where: {
+        gym_id: gymId,
+        verified_at: IsNull(),
+        rejected_at: Not(IsNull()),
+      },
+      order: { rejected_at: 'DESC' },
     });
   }
 
@@ -61,7 +73,14 @@ export class UserService {
 
     if (approved) {
       user.verified_at = new Date();
-      user.role = UserRole.VERIFIED_CLIMBER;
+      user.rejected_at = null;
+      user.rejection_reason = null;
+      if (user.role === UserRole.GUEST) {
+        user.role = UserRole.VERIFIED_CLIMBER;
+      }
+    } else {
+      user.rejected_at = new Date();
+      user.rejection_reason = reason || null;
     }
 
     return this.userRepository.save(user);

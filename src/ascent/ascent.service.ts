@@ -108,7 +108,7 @@ export class AscentService {
   async getAscentCalendar(userId: number, month: string): Promise<Record<string, { total: number; sent: number }>> {
     const [year, monthNum] = month.split('-').map(Number);
     const startDate = new Date(year, monthNum - 1, 1);
-    const endDate = new Date(year, monthNum, 0);
+    const endDate = new Date(year, monthNum, 0, 23, 59, 59, 999);
 
     const ascents = await this.ascentRepository.find({
       where: {
@@ -120,10 +120,10 @@ export class AscentService {
 
     const calendar: Record<string, { total: number; sent: number }> = {};
 
-    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.HIGH_POINT];
+    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.REDPOINT];
 
     for (const ascent of ascents) {
-      const dateStr = ascent.created_at.toISOString().split('T')[0];
+      const dateStr = this.formatLocalDate(ascent.created_at);
       if (!calendar[dateStr]) {
         calendar[dateStr] = { total: 0, sent: 0 };
       }
@@ -134,5 +134,12 @@ export class AscentService {
     }
 
     return calendar;
+  }
+
+  private formatLocalDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }
