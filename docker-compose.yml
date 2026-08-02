@@ -26,6 +26,8 @@ services:
       # 项目没有提供数据库迁移文件，依赖 TypeORM synchronize 自动建表，
       # 而 synchronize 仅在 NODE_ENV !== 'production' 时开启，因此这里使用 development
       NODE_ENV: development
+      # 统计按服务器本地时间切日，容器默认 UTC 会让东八区凌晨的记录落到前一天
+      TZ: Asia/Shanghai
       PORT: 3000
       DB_HOST: mysql
       DB_PORT: 3306

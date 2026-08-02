@@ -7,6 +7,7 @@ import {
   Query,
   UseGuards,
   ParseIntPipe,
+  Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { VerifyUserDto } from './dto/verify-user.dto';
@@ -34,6 +35,11 @@ export class UserController {
       verified: verified !== undefined ? verified === 'true' : undefined,
       search,
     });
+  }
+
+  @Get('users/me/verification-status')
+  getMyVerificationStatus(@Request() req: any) {
+    return this.userService.getVerificationStatus(req.user.id);
   }
 
   @Get('gyms/:gymId/pending-verifications')
