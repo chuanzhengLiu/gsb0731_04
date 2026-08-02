@@ -120,7 +120,7 @@ export class AscentService {
 
     const calendar: Record<string, { total: number; sent: number }> = {};
 
-    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.REDPOINT];
+    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.HIGH_POINT];
 
     for (const ascent of ascents) {
       const dateStr = ascent.created_at.toISOString().split('T')[0];

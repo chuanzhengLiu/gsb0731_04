@@ -59,7 +59,7 @@ export class AnalyticsService {
     });
 
     const result: RouteHeat[] = [];
-    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.REDPOINT];
+    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.HIGH_POINT];
 
     for (const route of routes) {
       const allAscents = await this.ascentRepository.count({
