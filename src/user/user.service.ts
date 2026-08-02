@@ -15,6 +15,7 @@ export class UserService {
     filters?: {
       role?: UserRole;
       verified?: boolean;
+      rejected?: boolean;
       search?: string;
     },
   ): Promise<User[]> {
@@ -29,6 +30,14 @@ export class UserService {
         where.verified_at = Not(IsNull());
       } else {
         where.verified_at = IsNull();
+      }
+    }
+
+    if (filters?.rejected !== undefined) {
+      if (filters.rejected) {
+        where.rejected_at = Not(IsNull());
+      } else {
+        where.rejected_at = IsNull();
       }
     }
 
@@ -47,6 +56,7 @@ export class UserService {
       where: {
         gym_id: gymId,
         verified_at: IsNull(),
+        rejected_at: IsNull(),
         role: Not(UserRole.GUEST),
       },
       order: { created_at: 'ASC' },
@@ -61,7 +71,19 @@ export class UserService {
 
     if (approved) {
       user.verified_at = new Date();
-      user.role = UserRole.VERIFIED_CLIMBER;
+      user.rejected_at = null;
+      user.rejection_reason = null;
+      if (user.role === UserRole.GUEST) {
+        user.role = UserRole.VERIFIED_CLIMBER;
+      }
+    } else {
+      if (user.verified_at) {
+        throw new BadRequestException('已认证通过的用户不能驳回');
+      }
+      user.rejected_at = new Date();
+      if (reason !== undefined) {
+        user.rejection_reason = reason;
+      }
     }
 
     return this.userRepository.save(user);

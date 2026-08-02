@@ -27,11 +27,13 @@ export class UserController {
     @Param('gymId', ParseIntPipe) gymId: number,
     @Query('role') role?: UserRole,
     @Query('verified') verified?: string,
+    @Query('rejected') rejected?: string,
     @Query('search') search?: string,
   ) {
     return this.userService.findByGym(gymId, {
       role,
       verified: verified !== undefined ? verified === 'true' : undefined,
+      rejected: rejected !== undefined ? rejected === 'true' : undefined,
       search,
     });
   }
