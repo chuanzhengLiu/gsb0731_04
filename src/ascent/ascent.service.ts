@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, FindManyOptions } from 'typeorm';
-import { Ascent, AscentType } from '../entities/ascent.entity';
+import { Ascent } from '../entities/ascent.entity';
 import { UserRole } from '../entities/user.entity';
 import { CreateAscentDto } from './dto/create-ascent.dto';
 import { UpdateAscentDto } from './dto/update-ascent.dto';
+import { isSentAscent, getMonthDateRange } from '../common/ascent-rules';
 
 @Injectable()
 export class AscentService {
@@ -106,9 +107,7 @@ export class AscentService {
   }
 
   async getAscentCalendar(userId: number, month: string): Promise<Record<string, { total: number; sent: number }>> {
-    const [year, monthNum] = month.split('-').map(Number);
-    const startDate = new Date(year, monthNum - 1, 1);
-    const endDate = new Date(year, monthNum, 0);
+    const { startDate, endDate } = getMonthDateRange(month);
 
     const ascents = await this.ascentRepository.find({
       where: {
@@ -120,15 +119,13 @@ export class AscentService {
 
     const calendar: Record<string, { total: number; sent: number }> = {};
 
-    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.HIGH_POINT];
-
     for (const ascent of ascents) {
       const dateStr = ascent.created_at.toISOString().split('T')[0];
       if (!calendar[dateStr]) {
         calendar[dateStr] = { total: 0, sent: 0 };
       }
       calendar[dateStr].total += 1;
-      if (sentTypes.includes(ascent.ascent_type)) {
+      if (isSentAscent(ascent.ascent_type)) {
         calendar[dateStr].sent += 1;
       }
     }

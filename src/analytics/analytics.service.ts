@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, In, MoreThan } from 'typeorm';
 import { Route, RouteStatus } from '../entities/route.entity';
-import { Ascent, AscentType } from '../entities/ascent.entity';
+import { Ascent } from '../entities/ascent.entity';
 import { User, UserRole } from '../entities/user.entity';
 import { Wall } from '../entities/wall.entity';
+import { SENT_ASCENT_TYPES, isSentAscent } from '../common/ascent-rules';
 
 export interface RouteHeat {
   route_id: number;
@@ -59,7 +60,10 @@ export class AnalyticsService {
     });
 
     const result: RouteHeat[] = [];
-    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.HIGH_POINT];
+    // Send rate = completions / total ascents. The completion set is defined once
+    // in ascent-rules (FLASH / ONSIGHT / REDPOINT) and shared with the calendar
+    // and pyramid stats so the three pages can never diverge.
+    const sentTypes = SENT_ASCENT_TYPES as readonly string[];
 
     for (const route of routes) {
       const allAscents = await this.ascentRepository.count({
@@ -253,10 +257,9 @@ export class AnalyticsService {
     });
 
     const pyramid: Record<string, number> = {};
-    const sentTypes = [AscentType.FLASH, AscentType.ONSIGHT, AscentType.REDPOINT];
 
     for (const ascent of ascents) {
-      if (sentTypes.includes(ascent.ascent_type) && ascent.route) {
+      if (isSentAscent(ascent.ascent_type) && ascent.route) {
         pyramid[ascent.route.grade] = (pyramid[ascent.route.grade] || 0) + 1;
       }
     }
